@@ -10,5 +10,5 @@ fs.writeFile(filePath, contentToWrite, 'utf-8', (err) => {
   if (err) {
     // Print the error object if an error occurred
     console.error(err);
-  } 
+  }
 });

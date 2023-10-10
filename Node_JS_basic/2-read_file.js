@@ -26,11 +26,11 @@ function countStudents(path) {
       }
     }
 
-    const totalStudents = studentsData.length;
+    const totalStudents = studentsData.length - 1;
     console.log(`Number of students: ${totalStudents}`);
 
     for (const field in fieldsCount) {
-      if (field) {
+      if (field !== 'field') {
         const fieldStudents = fieldsCount[field].length;
         const firstNameList = fieldsCount[field].join(', ');
         console.log(`Number of students in ${field}: ${fieldStudents}. List: ${firstNameList}`);

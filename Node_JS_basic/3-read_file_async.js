@@ -4,44 +4,30 @@ function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
       if (err) {
-        reject(new Error('Cannot load the database'));
-        return;
+        reject(Error('Cannot load the database'));
+      } else {
+        const [headerLine, ...lines] = data.split('\n').filter((line) => line.length > 0);
+        const headers = headerLine.split(',');
+        const result = [];
+
+        let message = `Number of students: ${lines.length}`;
+        console.log(message);
+        result.push(message);
+
+        const listObj = lines.map((line) => line.split(',').reduce((object, currentValue, index) => Object.assign(object, { [headers[index]]: currentValue }), {}));
+
+        const groupByField = listObj.reduce((res, currentValue) => {
+          res[currentValue.field] = res[currentValue.field] || [];
+          res[currentValue.field].push(currentValue.firstname);
+          return res;
+        }, {});
+        Object.keys(groupByField).forEach((key) => {
+          message = `Number of students in ${key}: ${groupByField[key].length}. List: ${groupByField[key].join(', ')}`;
+          console.log(message);
+          result.push(message);
+        });
+        resolve(result);
       }
-
-      const lines = data.trim().split('\n');
-      const studentsData = [];
-      const fieldsCount = {};
-
-      for (const line of lines) {
-        const [firstName, lastName, age, field] = line.split(',');
-
-        if (firstName && lastName && age && field) {
-          studentsData.push(
-            {
-              firstName, lastName, age, field,
-            },
-          );
-
-          if (!fieldsCount[field]) {
-            fieldsCount[field] = [];
-          }
-
-          fieldsCount[field].push(firstName);
-        }
-      }
-
-      const totalStudents = studentsData.length - 1;
-      console.log(`Number of students: ${totalStudents}`);
-
-      for (const field in fieldsCount) {
-        if (field !== 'field') {
-          const fieldStudents = fieldsCount[field].length;
-          const firstNameList = fieldsCount[field].join(', ');
-          console.log(`Number of students in ${field}: ${fieldStudents}. List: ${firstNameList}`);
-        }
-      }
-
-      resolve(`Number of students: ${totalStudents}`);
     });
   });
 }

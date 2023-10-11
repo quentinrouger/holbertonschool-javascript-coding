@@ -20,7 +20,7 @@ app.get('/students', async (req, res) => {
     // Join the array elements into a single string
     res.end(data.join('\n'));
   } catch (error) {
-    res.end(error.message);
+    res.end(`${error.message}`);
   }
 });
 
